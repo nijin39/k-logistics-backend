@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "hanjin-backend"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1lhsqnh411fuw"
+s3_prefix = "hanjin-backend"
+region = "ap-northeast-2"
+profile = "sam"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
