@@ -1,7 +1,12 @@
 import * as AWS from 'aws-sdk';
+import https from 'https';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 import { Terminal } from '../domain/Terminal';
 import { TerminalRepository } from '../domain/TerminalRepository';
+
+const agent = new https.Agent({
+    keepAlive: true,
+});
 
 const serviceLocalConfigOptions: ServiceConfigurationOptions = {
     region: 'ap-northeast-2',
@@ -12,6 +17,9 @@ const serviceLocalConfigOptions: ServiceConfigurationOptions = {
 
 const serviceConfigOptions: ServiceConfigurationOptions = {
     region: 'ap-northeast-2',
+    httpOptions: {
+        agent,
+    },
 };
 
 if (process.env.AWS_SAM_LOCAL) {
