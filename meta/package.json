@@ -29,6 +29,8 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "aws-lambda-router": "^0.11.0"
+    "aws-lambda-router": "^0.11.0",
+    "aws-sdk": "^2.1097.0",
+    "lambda-api": "^0.11.2"
   }
 }
