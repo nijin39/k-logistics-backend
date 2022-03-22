@@ -5,8 +5,14 @@ import TerminalService from './app/application/TerminalService';
 const api = API({});
 const terminalService = TerminalService.getInstance();
 
-api.get('/terminal', (req, res) => {
-    res.cors({}).send(terminalService.getAllTerminals());
+api.get('/terminal', async (req, res) => {
+    const terminals = await terminalService.findAll();
+    res.cors({}).send({ terminals: terminals });
+});
+
+api.get('/all', async (req, res) => {
+    const terminals = await terminalService.findAll();
+    res.cors({}).send(terminals);
 });
 
 api.get('/company', (req, res) => {
