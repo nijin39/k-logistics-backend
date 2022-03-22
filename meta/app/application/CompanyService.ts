@@ -1,4 +1,4 @@
-import { Request, Response } from 'lambda-api';
+//import { Request, Response } from 'lambda-api';
 
 class CompanyService {
     private static instance: CompanyService;

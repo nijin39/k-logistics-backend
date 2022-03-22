@@ -1,4 +1,4 @@
-import { Request, Response } from 'lambda-api';
+//import { Request, Response } from 'lambda-api';
 import { Terminal } from '../domain/Terminal';
 import TerminalDDBRepository from '../infra/TerminalDDBRepository';
 
