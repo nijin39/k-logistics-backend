@@ -1,5 +1,11 @@
 //import { Request, Response } from 'lambda-api';
 
+import { Company } from '../domain/Company';
+import { CompanyRepository } from '../domain/CompanyRepository';
+import CompanyDDBRepository from '../infra/CompanyDDBRepository';
+
+const companyRepository: CompanyRepository = CompanyDDBRepository.getInstance;
+
 class CompanyService {
     private static instance: CompanyService;
 
@@ -8,6 +14,17 @@ class CompanyService {
 
     public static getInstance() {
         return this.instance || (this.instance = new this());
+    }
+
+    async findAll(): Promise<Company[]> {
+        try {
+            const companies = await companyRepository.findAll();
+            console.log('COMPANIES :', JSON.stringify(companies));
+            return companies;
+        } catch (error) {
+            console.error('Error');
+            throw new Error('DDB');
+        }
     }
 
     getAllCompanies() {

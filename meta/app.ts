@@ -1,9 +1,11 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import API from 'lambda-api';
+import CompanyService from './app/application/CompanyService';
 import TerminalService from './app/application/TerminalService';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
+const companyService = CompanyService.getInstance();
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -15,23 +17,9 @@ api.get('/all', async (req, res) => {
     res.cors({}).send(terminals);
 });
 
-api.get('/company', (req, res) => {
-    res.cors({
-        maxAge: 84000000,
-    }).send({
-        companies: [
-            {
-                id: 1,
-                companyName: '최고통운',
-                companyNumber: '02-423-2341',
-            },
-            {
-                id: 2,
-                companyName: '민국통운',
-                companyNumber: '044-211-2345',
-            },
-        ],
-    });
+api.get('/company', async (req, res) => {
+    const companies = await companyService.findAll();
+    res.cors({}).send({ companies: companies });
 });
 
 exports.lambdaHandler = async (event: APIGatewayProxyEvent, context: Context) => {
