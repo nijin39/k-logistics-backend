@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import https from 'https';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
-import { TerminalArea } from '../domain/TerminalArea';
-import { TerminalAreaRepository } from '../domain/TerminalAreaRepository';
+import { CompanyRateRepository } from '../domain/CompanyRateRepository';
+import { CompanyRate } from '../domain/CompanyRate';
 
 const agent = new https.Agent({
     keepAlive: true,
@@ -31,47 +31,47 @@ if (process.env.AWS_SAM_LOCAL) {
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const MetaTable = String(process.env.META_TABLE);
 
-class TerminalAreaDDBRepository implements TerminalAreaRepository {
-    private static instance: TerminalAreaDDBRepository;
+class CompanyRateDDBRepository implements CompanyRateRepository {
+    private static instance: CompanyRateDDBRepository;
 
     private constructor() {
-        TerminalAreaDDBRepository.instance = this;
+        CompanyRateDDBRepository.instance = this;
     }
 
     static get getInstance() {
-        if (!TerminalAreaDDBRepository.instance) {
-            TerminalAreaDDBRepository.instance = new TerminalAreaDDBRepository();
+        if (!CompanyRateDDBRepository.instance) {
+            CompanyRateDDBRepository.instance = new CompanyRateDDBRepository();
         }
 
         return this.instance;
     }
 
-    async findAll(): Promise<TerminalArea[]> {
+    async findAll(): Promise<CompanyRate[]> {
         const param = {
             TableName: MetaTable,
             KeyConditionExpression: 'PK = :pk',
             ExpressionAttributeValues: {
-                ':pk': 'META#TERMINALAREA',
+                ':pk': 'META#COMPANYRATE',
             },
         };
 
         try {
             const result = await dynamoDbClient.query(param).promise();
-            return result.Items as TerminalArea[];
+            return result.Items as CompanyRate[];
         } catch (error) {
             console.log(JSON.stringify(error));
             throw new Error(JSON.stringify(error));
         }
     }
 
-    async save(terminalArea: string, area: string) {
+    async save(fromTo: string, companyName: string, rate: number) {
         const param = {
-            TableName: 'Meta',
+            TableName: MetaTable,
             Item: {
-                PK: 'META#TERMINALAREA',
-                SK: 'TERMINALAREA#' + terminalArea,
-                billingCompany: terminalArea,
-                area: area,
+                PK: 'META#COMPANYRATE',
+                SK: 'COMPANYRATE#' + fromTo,
+                companyName: companyName,
+                rate: rate,
             },
         };
 
@@ -84,4 +84,4 @@ class TerminalAreaDDBRepository implements TerminalAreaRepository {
     }
 }
 
-export default TerminalAreaDDBRepository;
+export default CompanyRateDDBRepository;

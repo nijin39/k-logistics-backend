@@ -2,9 +2,13 @@
 
 import { Company } from '../domain/Company';
 import { CompanyRepository } from '../domain/CompanyRepository';
+import { CompanyRateRepository } from '../domain/CompanyRateRepository';
 import CompanyDDBRepository from '../infra/CompanyDDBRepository';
+import CompanyRateDDBRepository from '../infra/CompanyRateDDBRepository';
+import { CompanyRate } from '../domain/CompanyRate';
 
 const companyRepository: CompanyRepository = CompanyDDBRepository.getInstance;
+const companyRateRepository: CompanyRateRepository = CompanyRateDDBRepository.getInstance;
 
 class CompanyService {
     private static instance: CompanyService;
@@ -27,21 +31,23 @@ class CompanyService {
         }
     }
 
-    getAllCompanies() {
-        return {
-            terminals: [
-                {
-                    id: 1,
-                    terminalName: '서울',
-                    terminalGeo: 'Seoul',
-                },
-                {
-                    id: 2,
-                    terminalName: '부산',
-                    terminalGeo: 'Busan',
-                },
-            ],
-        };
+    async findAllCompanyRate(): Promise<CompanyRate[]> {
+        try {
+            const companyRates = await companyRateRepository.findAll();
+            return companyRates;
+        } catch (error) {
+            console.error('Error');
+            throw new Error('DDB');
+        }
+    }
+
+    async companyRateSave(fromTo: string, companyName: string, rate: number) {
+        try {
+            await companyRateRepository.save(fromTo, companyName, rate);
+        } catch (error) {
+            console.error('Error');
+            throw new Error('DDB');
+        }
     }
 }
 
