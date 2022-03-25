@@ -29,9 +29,15 @@ api.get('/terminal-area', async (req, res) => {
 });
 
 api.post('/company-rate', async (req, res) => {
+    console.log(JSON.stringify(req.body));
     const { fromTo, companyName, rate } = JSON.parse(JSON.stringify(req.body));
-    await companyService.companyRateSave(fromTo, companyName, rate);
-    res.cors({}).send({ status: 'saved success' });
+    try {
+        await companyService.companyRateSave(fromTo, companyName, rate);
+    } catch (error) {
+        console.log('Error :', error);
+    }
+    const updatedRate = await companyService.findAllCompanyRate();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ companyRates: updatedRate });
 });
 
 api.get('/company-rate', async (req, res) => {

@@ -70,6 +70,7 @@ class CompanyRateDDBRepository implements CompanyRateRepository {
             Item: {
                 PK: 'META#COMPANYRATE',
                 SK: 'COMPANYRATE#' + fromTo,
+                fromTo: fromTo,
                 companyName: companyName,
                 rate: rate,
             },
