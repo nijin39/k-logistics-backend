@@ -66,6 +66,32 @@ class SettlementDDBRepository implements SettlementRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async save(settlement: Settlement) {
+        const param = {
+            TableName: MetaTable,
+            Item: {
+                PK: 'SETTLEMENT',
+                SK: '20220330#' + settlement.id,
+                id: settlement.id,
+                terminalArrival: settlement.terminalArrival,
+                terminalArrivalAreaCode: settlement.terminalArrivalAreaCode,
+                arrivalTime: settlement.arrivalTime,
+                terminalDeparture: settlement.terminalDeparture,
+                terminalDepartureAreaCode: settlement.terminalDepartureAreaCode,
+                departureTime: settlement.departureTime,
+                carType: settlement.carType,
+                rate: settlement.rate,
+            },
+        };
+
+        try {
+            await dynamoDbClient.put(param).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 export default SettlementDDBRepository;

@@ -83,6 +83,23 @@ class CompanyRateDDBRepository implements CompanyRateRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async findByFromTo(fromTo: string): Promise<CompanyRate> {
+        const params = {
+            TableName: MetaTable,
+            Key: {
+                PK: 'META#COMPANYRATE',
+                SK: 'COMPANYRATE#' + fromTo,
+            },
+        };
+        try {
+            const result = await dynamoDbClient.get(params).promise();
+            return result.Item as CompanyRate;
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 export default CompanyRateDDBRepository;

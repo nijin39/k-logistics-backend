@@ -59,6 +59,11 @@ api.get('/settlement', async (req, res) => {
     res.cors({}).send({ settlements: settlements });
 });
 
+api.post('/settlement', async (req, res) => {
+    const settlements = await settlementService.settlement();
+    res.cors({}).send({ settlements: settlements });
+});
+
 api.get('/all', async (req, res) => {
     const terminals = await terminalService.findAll();
     res.cors({}).send(terminals);
