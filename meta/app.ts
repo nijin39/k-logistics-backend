@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 import API from 'lambda-api';
 import CompanyService from './app/application/CompanyService';
+import OperationService from './app/application/OperationService';
 import TerminalAreaService from './app/application/TerminalAreaService';
 import TerminalService from './app/application/TerminalService';
 import { TerminalArea } from './app/domain/TerminalArea';
@@ -9,6 +10,7 @@ const api = API({});
 const terminalService = TerminalService.getInstance();
 const terminalAreaService = TerminalAreaService.getInstance();
 const companyService = CompanyService.getInstance();
+const operationService = OperationService.getInstance();
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -43,6 +45,11 @@ api.post('/company-rate', async (req, res) => {
 api.get('/company-rate', async (req, res) => {
     const companyRates = await companyService.findAllCompanyRate();
     res.cors({}).send({ companyRates: companyRates });
+});
+
+api.get('/operation', async (req, res) => {
+    const operations = await operationService.findAll();
+    res.cors({}).send({ operations: operations });
 });
 
 api.get('/all', async (req, res) => {
