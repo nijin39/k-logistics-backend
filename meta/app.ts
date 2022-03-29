@@ -4,6 +4,7 @@ import CompanyService from './app/application/CompanyService';
 import OperationService from './app/application/OperationService';
 import TerminalAreaService from './app/application/TerminalAreaService';
 import TerminalService from './app/application/TerminalService';
+import SettlementService from './app/application/SettlementService';
 import { TerminalArea } from './app/domain/TerminalArea';
 
 const api = API({});
@@ -11,6 +12,7 @@ const terminalService = TerminalService.getInstance();
 const terminalAreaService = TerminalAreaService.getInstance();
 const companyService = CompanyService.getInstance();
 const operationService = OperationService.getInstance();
+const settlementService = SettlementService.getInstance();
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -50,6 +52,11 @@ api.get('/company-rate', async (req, res) => {
 api.get('/operation', async (req, res) => {
     const operations = await operationService.findAll();
     res.cors({}).send({ operations: operations });
+});
+
+api.get('/settlement', async (req, res) => {
+    const settlements = await settlementService.findAll();
+    res.cors({}).send({ settlements: settlements });
 });
 
 api.get('/all', async (req, res) => {
