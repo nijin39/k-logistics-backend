@@ -55,6 +55,13 @@ class SettlementService {
 
         return settlements as unknown as Settlement[];
     }
+
+    async reset(): Promise<void> {
+        const settlement: Settlement[] = await this.findAll();
+        settlement.forEach(async (item) => {
+            await settlementRepository.delete(item);
+        });
+    }
 }
 
 export default SettlementService;

@@ -64,6 +64,11 @@ api.post('/settlement', async (req, res) => {
     res.cors({}).send({ settlements: settlements });
 });
 
+api.delete('/settlement', async (req, res) => {
+    const settlements = await settlementService.reset();
+    res.cors({}).send({ result: 'Success all settlement' });
+});
+
 api.get('/all', async (req, res) => {
     const terminals = await terminalService.findAll();
     res.cors({}).send(terminals);

@@ -92,6 +92,23 @@ class SettlementDDBRepository implements SettlementRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async delete(settlement: Settlement) {
+        const params = {
+            TableName: MetaTable,
+            Key: {
+                PK: 'SETTLEMENT',
+                SK: '20220330#' + settlement.id,
+            },
+        };
+
+        try {
+            await dynamoDbClient.delete(params).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 export default SettlementDDBRepository;
