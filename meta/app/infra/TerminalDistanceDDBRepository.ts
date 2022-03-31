@@ -1,8 +1,8 @@
 import * as AWS from 'aws-sdk';
 import https from 'https';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
-import { SettlementRepository } from '../domain/SettlementRepository';
-import { Settlement } from '../domain/Settlement';
+import { TerminalDistanceRepository } from '../domain/TerminalDistanceRepository';
+import { TerminalDistance } from '../domain/TerminalDistance';
 
 const agent = new https.Agent({
     keepAlive: true,
@@ -31,58 +31,48 @@ if (process.env.AWS_SAM_LOCAL) {
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 const MetaTable = String(process.env.META_TABLE);
 
-class SettlementDDBRepository implements SettlementRepository {
-    private static instance: SettlementDDBRepository;
+class TerminalDistanceDDBRepository implements TerminalDistanceRepository {
+    private static instance: TerminalDistanceDDBRepository;
 
     private constructor() {
-        SettlementDDBRepository.instance = this;
+        TerminalDistanceDDBRepository.instance = this;
     }
 
     static get getInstance() {
-        if (!SettlementDDBRepository.instance) {
-            SettlementDDBRepository.instance = new SettlementDDBRepository();
+        if (!TerminalDistanceDDBRepository.instance) {
+            TerminalDistanceDDBRepository.instance = new TerminalDistanceDDBRepository();
         }
 
         return this.instance;
     }
 
-    async findAll(): Promise<Settlement[]> {
+    async findAll(): Promise<TerminalDistance[]> {
         const param = {
             TableName: MetaTable,
             KeyConditionExpression: 'PK = :pk',
             ExpressionAttributeValues: {
-                ':pk': 'SETTLEMENT',
+                ':pk': 'META#TERMINALDISTANCE',
             },
         };
 
-        console.log('Params :', param);
-
         try {
             const result = await dynamoDbClient.query(param).promise();
-            console.log(JSON.stringify(result.Items));
-            return result.Items as Settlement[];
+            return result.Items as TerminalDistance[];
         } catch (error) {
             console.log(JSON.stringify(error));
             throw new Error(JSON.stringify(error));
         }
     }
 
-    async save(settlement: Settlement) {
+    async save(departure: string, arrival: string, distance: number) {
         const param = {
-            TableName: MetaTable,
+            TableName: 'Meta',
             Item: {
-                PK: 'SETTLEMENT',
-                SK: '20220330#' + settlement.id,
-                id: settlement.id,
-                terminalArrival: settlement.terminalArrival,
-                terminalArrivalAreaCode: settlement.terminalArrivalAreaCode,
-                arrivalTime: settlement.arrivalTime,
-                terminalDeparture: settlement.terminalDeparture,
-                terminalDepartureAreaCode: settlement.terminalDepartureAreaCode,
-                departureTime: settlement.departureTime,
-                carType: settlement.carType,
-                rate: settlement.rate,
-                distance: settlement.distance,
+                PK: 'META#TERMINALDISTANCE',
+                SK: 'TERMINALDISTANCE#' + departure + '#' + arrival,
+                departure: departure,
+                arrival: arrival,
+                distance: distance,
             },
         };
 
@@ -94,17 +84,17 @@ class SettlementDDBRepository implements SettlementRepository {
         }
     }
 
-    async delete(settlement: Settlement) {
+    async findByFromTo(departure: string, arrival: string): Promise<TerminalDistance> {
         const params = {
             TableName: MetaTable,
             Key: {
-                PK: 'SETTLEMENT',
-                SK: '20220330#' + settlement.id,
+                PK: 'META#TERMINALDISTANCE',
+                SK: 'TERMINALDISTANCE#' + departure + '#' + arrival,
             },
         };
-
         try {
-            await dynamoDbClient.delete(params).promise();
+            const result = await dynamoDbClient.get(params).promise();
+            return result.Item as TerminalDistance;
         } catch (error) {
             console.log(JSON.stringify(error));
             throw new Error(JSON.stringify(error));
@@ -112,4 +102,4 @@ class SettlementDDBRepository implements SettlementRepository {
     }
 }
 
-export default SettlementDDBRepository;
+export default TerminalDistanceDDBRepository;

@@ -6,10 +6,13 @@ import TerminalAreaService from './app/application/TerminalAreaService';
 import TerminalService from './app/application/TerminalService';
 import SettlementService from './app/application/SettlementService';
 import { TerminalArea } from './app/domain/TerminalArea';
+import TerminalDistanceService from './app/application/TerminalDistanceService';
+import { TerminalDistance } from './app/domain/TerminalDistance';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
 const terminalAreaService = TerminalAreaService.getInstance();
+const terminalDistanceService = TerminalDistanceService.getInstance();
 const companyService = CompanyService.getInstance();
 const operationService = OperationService.getInstance();
 const settlementService = SettlementService.getInstance();
@@ -42,6 +45,23 @@ api.post('/company-rate', async (req, res) => {
     }
     const updatedRate = await companyService.findAllCompanyRate();
     res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ companyRates: updatedRate });
+});
+
+api.get('/terminal-distance', async (req, res) => {
+    const terminalDistance: TerminalDistance[] = await terminalDistanceService.findAll();
+    res.cors({}).send({ terminalDistances: terminalDistance });
+});
+
+api.post('/terminal-distance', async (req, res) => {
+    console.log(JSON.stringify(req.body));
+    const { departure, arrival, distance } = JSON.parse(JSON.stringify(req.body));
+    try {
+        await terminalDistanceService.save(departure, arrival, Number(distance));
+    } catch (error) {
+        console.log('Error :', error);
+    }
+    //const updatedTerminalDistances = await terminalDistanceService.findAll();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
 });
 
 api.get('/company-rate', async (req, res) => {

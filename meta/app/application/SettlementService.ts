@@ -6,13 +6,17 @@ import { Operation } from '../domain/Operation';
 import { OperationRepository } from '../domain/OperationRepository';
 import { Settlement } from '../domain/Settlement';
 import { SettlementRepository } from '../domain/SettlementRepository';
+import { TerminalDistance } from '../domain/TerminalDistance';
+import { TerminalDistanceRepository } from '../domain/TerminalDistanceRepository';
 import CompanyRateDDBRepository from '../infra/CompanyRateDDBRepository';
 import OperationDDBRepository from '../infra/OperationDDBRepository';
 import SettlementDDBRepository from '../infra/SettlementDDBRepository';
+import TerminalDistanceDDBRepository from '../infra/TerminalDistanceDDBRepository';
 
 const settlementRepository: SettlementRepository = SettlementDDBRepository.getInstance;
 const companyRateRepository: CompanyRateRepository = CompanyRateDDBRepository.getInstance;
 const operationRepository: OperationRepository = OperationDDBRepository.getInstance;
+const terminalDistanceRepository: TerminalDistanceRepository = TerminalDistanceDDBRepository.getInstance;
 
 class SettlementService {
     private static instance: SettlementService;
@@ -38,22 +42,38 @@ class SettlementService {
     async settlement(): Promise<Settlement[]> {
         const operations: Operation[] = await operationRepository.findAll();
 
-        const settlements = await Promise.all(
-            operations.map(async (item: Operation) => {
-                const companyRate: CompanyRate = await companyRateRepository.findByFromTo(
-                    item.terminalDepartureAreaCode + item.terminalArrivalAreaCode,
-                );
-                return { ...item, rate: companyRate.rate };
-            }),
-        );
+        try {
+            const settlements = await Promise.all(
+                operations.map(async (item: Operation) => {
+                    const companyRate: CompanyRate = await companyRateRepository.findByFromTo(
+                        item.terminalDepartureAreaCode + item.terminalArrivalAreaCode,
+                    );
+                    const terminalDistance: TerminalDistance = await terminalDistanceRepository.findByFromTo(
+                        item.terminalDeparture,
+                        item.terminalArrival,
+                    );
 
-        settlements.forEach(async (item) => {
-            await settlementRepository.save(item);
-        });
+                    console.log('Distance :', terminalDistance);
 
-        console.log('Settlements:', settlements);
+                    return {
+                        ...item,
+                        rate: companyRate.rate,
+                        distance: terminalDistance === undefined ? 0 : terminalDistance.distance,
+                    };
+                }),
+            );
 
-        return settlements as unknown as Settlement[];
+            settlements.forEach(async (item) => {
+                await settlementRepository.save(item);
+            });
+
+            console.log('Settlements:', settlements);
+
+            return settlements as unknown as Settlement[];
+        } catch (error) {
+            console.error('Error :', error);
+            throw new Error(JSON.stringify(error));
+        }
     }
 
     async reset(): Promise<void> {

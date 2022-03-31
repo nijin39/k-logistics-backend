@@ -10,6 +10,7 @@ export class Settlement {
     departureTime: string;
     carType: number;
     rate: number;
+    distance: number;
 
     constructor(
         PK: string,
@@ -23,6 +24,7 @@ export class Settlement {
         departureTime: string,
         carType: number,
         rate: number,
+        distance: number,
     ) {
         this.PK = PK;
         this.SK = SK;
@@ -35,5 +37,6 @@ export class Settlement {
         this.departureTime = departureTime;
         this.carType = carType;
         this.rate = rate;
+        this.distance = distance;
     }
 }
