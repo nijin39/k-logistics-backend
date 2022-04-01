@@ -53,8 +53,6 @@ class SettlementService {
                         item.terminalArrival,
                     );
 
-                    console.log('Distance :', terminalDistance);
-
                     return {
                         ...item,
                         rate: companyRate.rate,
@@ -66,8 +64,6 @@ class SettlementService {
             settlements.forEach(async (item) => {
                 await settlementRepository.save(item);
             });
-
-            console.log('Settlements:', settlements);
 
             return settlements as unknown as Settlement[];
         } catch (error) {

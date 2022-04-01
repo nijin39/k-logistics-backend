@@ -8,6 +8,7 @@ import SettlementService from './app/application/SettlementService';
 import { TerminalArea } from './app/domain/TerminalArea';
 import TerminalDistanceService from './app/application/TerminalDistanceService';
 import { TerminalDistance } from './app/domain/TerminalDistance';
+import CapacityService from './app/application/CapacityService';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
@@ -16,6 +17,7 @@ const terminalDistanceService = TerminalDistanceService.getInstance();
 const companyService = CompanyService.getInstance();
 const operationService = OperationService.getInstance();
 const settlementService = SettlementService.getInstance();
+const capacityService = CapacityService.getInstance();
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -64,6 +66,17 @@ api.post('/terminal-distance', async (req, res) => {
     res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
 });
 
+api.post('/capacity', async (req, res) => {
+    const { distance, capacity } = JSON.parse(JSON.stringify(req.body));
+    try {
+        await capacityService.save(Number(distance), Number(capacity));
+    } catch (error) {
+        console.log('Error :', error);
+    }
+    //const updatedTerminalDistances = await terminalDistanceService.findAll();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
+});
+
 api.get('/company-rate', async (req, res) => {
     const companyRates = await companyService.findAllCompanyRate();
     res.cors({}).send({ companyRates: companyRates });
@@ -85,7 +98,7 @@ api.post('/settlement', async (req, res) => {
 });
 
 api.delete('/settlement', async (req, res) => {
-    const settlements = await settlementService.reset();
+    await settlementService.reset();
     res.cors({}).send({ result: 'Success all settlement' });
 });
 
