@@ -64,7 +64,7 @@ class CapacityDDBRepository implements CapacityRepository {
         }
     }
 
-    async save(distance: number, capacity: number) {
+    async save(distance: number, capacity: number, price: number) {
         const param = {
             TableName: 'Meta',
             Item: {
@@ -72,11 +72,29 @@ class CapacityDDBRepository implements CapacityRepository {
                 SK: 'CAPACITY#' + capacity + '#' + distance,
                 distance: distance,
                 capacity: capacity,
+                price: price,
             },
         };
 
         try {
             await dynamoDbClient.put(param).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
+
+    async findByDistanceAndCapaticy(distance: number, carType: number): Promise<Capacity> {
+        const params = {
+            TableName: MetaTable,
+            Key: {
+                PK: 'META#CAPACITY',
+                SK: 'CAPACITY#' + carType + '#' + distance,
+            },
+        };
+        try {
+            const result = await dynamoDbClient.get(params).promise();
+            return result.Item as Capacity;
         } catch (error) {
             console.log(JSON.stringify(error));
             throw new Error(JSON.stringify(error));

@@ -24,9 +24,9 @@ class CapacityService {
         }
     }
 
-    async save(distance: number, capacity: number) {
+    async save(distance: number, capacity: number, price: number) {
         try {
-            await capacityRepository.save(distance, capacity);
+            await capacityRepository.save(distance, capacity, price);
         } catch (error) {
             console.error('Error');
             throw new Error('DDB');

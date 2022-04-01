@@ -83,6 +83,8 @@ class SettlementDDBRepository implements SettlementRepository {
                 carType: settlement.carType,
                 rate: settlement.rate,
                 distance: settlement.distance,
+                price: settlement.price,
+                sattlementPrice: settlement.sattlementPrice,
             },
         };
 

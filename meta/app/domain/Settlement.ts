@@ -11,6 +11,8 @@ export class Settlement {
     carType: number;
     rate: number;
     distance: number;
+    price: number;
+    sattlementPrice: number;
 
     constructor(
         PK: string,
@@ -25,6 +27,8 @@ export class Settlement {
         carType: number,
         rate: number,
         distance: number,
+        price: number,
+        sattlementPrice: number,
     ) {
         this.PK = PK;
         this.SK = SK;
@@ -38,5 +42,7 @@ export class Settlement {
         this.carType = carType;
         this.rate = rate;
         this.distance = distance;
+        this.price = price;
+        this.sattlementPrice = sattlementPrice;
     }
 }

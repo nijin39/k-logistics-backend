@@ -9,6 +9,7 @@ import { TerminalArea } from './app/domain/TerminalArea';
 import TerminalDistanceService from './app/application/TerminalDistanceService';
 import { TerminalDistance } from './app/domain/TerminalDistance';
 import CapacityService from './app/application/CapacityService';
+import { Capacity } from './app/domain/Capacity';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
@@ -67,14 +68,19 @@ api.post('/terminal-distance', async (req, res) => {
 });
 
 api.post('/capacity', async (req, res) => {
-    const { distance, capacity } = JSON.parse(JSON.stringify(req.body));
+    const { distance, capacity, price } = JSON.parse(JSON.stringify(req.body));
     try {
-        await capacityService.save(Number(distance), Number(capacity));
+        await capacityService.save(Number(distance), Number(capacity), Number(price));
     } catch (error) {
         console.log('Error :', error);
     }
     //const updatedTerminalDistances = await terminalDistanceService.findAll();
     res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
+});
+
+api.get('/capacity', async (req, res) => {
+    const capacities: Capacity[] = await capacityService.findAll();
+    res.cors({}).send({ capacities: capacities });
 });
 
 api.get('/company-rate', async (req, res) => {

@@ -1,5 +1,7 @@
 //import { Request, Response } from 'lambda-api';
 
+import { Capacity } from '../domain/Capacity';
+import { CapacityRepository } from '../domain/CapacityRepository';
 import { CompanyRate } from '../domain/CompanyRate';
 import { CompanyRateRepository } from '../domain/CompanyRateRepository';
 import { Operation } from '../domain/Operation';
@@ -8,6 +10,7 @@ import { Settlement } from '../domain/Settlement';
 import { SettlementRepository } from '../domain/SettlementRepository';
 import { TerminalDistance } from '../domain/TerminalDistance';
 import { TerminalDistanceRepository } from '../domain/TerminalDistanceRepository';
+import CapacityDDBRepository from '../infra/CapacityDDBRepository';
 import CompanyRateDDBRepository from '../infra/CompanyRateDDBRepository';
 import OperationDDBRepository from '../infra/OperationDDBRepository';
 import SettlementDDBRepository from '../infra/SettlementDDBRepository';
@@ -17,6 +20,7 @@ const settlementRepository: SettlementRepository = SettlementDDBRepository.getIn
 const companyRateRepository: CompanyRateRepository = CompanyRateDDBRepository.getInstance;
 const operationRepository: OperationRepository = OperationDDBRepository.getInstance;
 const terminalDistanceRepository: TerminalDistanceRepository = TerminalDistanceDDBRepository.getInstance;
+const tarriffRepository: CapacityRepository = CapacityDDBRepository.getInstance;
 
 class SettlementService {
     private static instance: SettlementService;
@@ -42,6 +46,7 @@ class SettlementService {
     async settlement(): Promise<Settlement[]> {
         const operations: Operation[] = await operationRepository.findAll();
 
+        //TODO need Refactoring
         try {
             const settlements = await Promise.all(
                 operations.map(async (item: Operation) => {
@@ -53,10 +58,22 @@ class SettlementService {
                         item.terminalArrival,
                     );
 
+                    const capaticy: Capacity = await tarriffRepository.findByDistanceAndCapaticy(
+                        terminalDistance.distance,
+                        item.carType,
+                    );
+
+                    const rate = companyRate.rate;
+                    const distance = terminalDistance === undefined ? 0 : terminalDistance.distance;
+                    const price = capaticy === undefined ? 0 : capaticy.price;
+                    const sattlementPrice = (price * rate) / 100;
+
                     return {
                         ...item,
                         rate: companyRate.rate,
-                        distance: terminalDistance === undefined ? 0 : terminalDistance.distance,
+                        distance: distance,
+                        price: price,
+                        sattlementPrice: sattlementPrice,
                     };
                 }),
             );
