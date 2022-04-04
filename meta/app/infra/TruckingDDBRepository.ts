@@ -80,6 +80,7 @@ class TruckingDDBRepository implements TruckingRepository {
                 arrivalId: trucking.arrivalId,
                 truckingId: trucking.truckingId,
                 truckingIndex: trucking.truckingIndex,
+                carType: trucking.carType,
             },
         };
 

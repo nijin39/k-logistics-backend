@@ -111,6 +111,11 @@ api.post('/trucking', async (req, res) => {
     res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
 });
 
+api.get('/trucking', async (req, res) => {
+    const truckings = await truckingService.findAll();
+    res.cors({}).send({ truckings: truckings });
+});
+
 api.post('/settlement', async (req, res) => {
     const settlements = await settlementService.settlement();
     res.cors({}).send({ settlements: settlements });
