@@ -116,6 +116,17 @@ api.get('/trucking', async (req, res) => {
     res.cors({}).send({ truckings: truckings });
 });
 
+api.delete('/trucking', async (req, res) => {
+    //const truckings = await truckingService.findAll();
+    const deleteParams: string[] = JSON.parse(JSON.stringify(req.body));
+    try {
+        await truckingService.delete(deleteParams);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        return res.cors({}).status(500);
+    }
+});
+
 api.post('/settlement', async (req, res) => {
     const settlements = await settlementService.settlement();
     res.cors({}).send({ settlements: settlements });

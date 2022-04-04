@@ -48,6 +48,19 @@ class TruckingService {
             throw new Error('DDB');
         }
     }
+
+    async delete(truckingIds: string[]) {
+        try {
+            await Promise.all(
+                truckingIds.map(async (id) => {
+                    await truckingRepository.delete(id);
+                }),
+            );
+        } catch (error) {
+            console.error('Error');
+            throw new Error('DDB');
+        }
+    }
 }
 
 export default TruckingService;

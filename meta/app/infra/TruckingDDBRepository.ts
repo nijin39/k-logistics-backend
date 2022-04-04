@@ -91,6 +91,23 @@ class TruckingDDBRepository implements TruckingRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async delete(truckingId: string) {
+        const params = {
+            TableName: MetaTable,
+            Key: {
+                PK: 'META#TRUCKING',
+                SK: 'TRUCKING#' + truckingId,
+            },
+        };
+
+        try {
+            await dynamoDbClient.delete(params).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 export default TruckingDDBRepository;
