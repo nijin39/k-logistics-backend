@@ -73,7 +73,7 @@ class SettlementService {
                         rate: companyRate.rate,
                         distance: distance,
                         price: price,
-                        sattlementPrice: sattlementPrice,
+                        sattlementPrice: Math.round(sattlementPrice),
                     };
                 }),
             );

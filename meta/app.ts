@@ -10,6 +10,7 @@ import TerminalDistanceService from './app/application/TerminalDistanceService';
 import { TerminalDistance } from './app/domain/TerminalDistance';
 import CapacityService from './app/application/CapacityService';
 import { Capacity } from './app/domain/Capacity';
+import TruckingService from './app/application/TruckingService';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
@@ -19,6 +20,17 @@ const companyService = CompanyService.getInstance();
 const operationService = OperationService.getInstance();
 const settlementService = SettlementService.getInstance();
 const capacityService = CapacityService.getInstance();
+const truckingService = TruckingService.getInstance();
+
+export interface TruckingRequest {
+    truckingId: string;
+    departureName: string;
+    departureId: string;
+    arrivalName: string;
+    arrivalId: string;
+    carType: string;
+    truckingCount: number;
+}
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -96,6 +108,17 @@ api.get('/operation', async (req, res) => {
 api.get('/settlement', async (req, res) => {
     const settlements = await settlementService.findAll();
     res.cors({}).send({ settlements: settlements });
+});
+
+api.post('/trucking', async (req, res) => {
+    const truckingRequest: TruckingRequest = JSON.parse(JSON.stringify(req.body));
+    try {
+        await truckingService.save(truckingRequest);
+    } catch (error) {
+        console.log('Error :', error);
+    }
+    //const updatedTerminalDistances = await terminalDistanceService.findAll();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
 });
 
 api.post('/settlement', async (req, res) => {
