@@ -22,16 +22,6 @@ const settlementService = SettlementService.getInstance();
 const capacityService = CapacityService.getInstance();
 const truckingService = TruckingService.getInstance();
 
-export interface TruckingRequest {
-    truckingId: string;
-    departureName: string;
-    departureId: string;
-    arrivalName: string;
-    arrivalId: string;
-    carType: string;
-    truckingCount: number;
-}
-
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
     res.cors({}).send({
@@ -140,6 +130,16 @@ api.get('/company', async (req, res) => {
     const companies = await companyService.findAll();
     res.cors({}).send({ companies: companies });
 });
+
+interface TruckingRequest {
+    truckingId: string;
+    departureName: string;
+    departureId: string;
+    arrivalName: string;
+    arrivalId: string;
+    carType: string;
+    truckingCount: number;
+}
 
 exports.lambdaHandler = async (event: APIGatewayProxyEvent, context: Context) => {
     return await api.run(event, context);

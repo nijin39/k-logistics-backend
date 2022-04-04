@@ -1,9 +1,18 @@
-import { TruckingRequest } from '../../app';
 import { Trucking } from '../domain/Trucking';
 import { TruckingRepository } from '../domain/TruckingRepository';
 import TruckingDDBRepository from '../infra/TruckingDDBRepository';
 
 const truckingRepository: TruckingRepository = TruckingDDBRepository.getInstance;
+
+interface TruckingRequest {
+    truckingId: string;
+    departureName: string;
+    departureId: string;
+    arrivalName: string;
+    arrivalId: string;
+    carType: string;
+    truckingCount: number;
+}
 
 class TruckingService {
     private static instance: TruckingService;
