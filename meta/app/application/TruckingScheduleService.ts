@@ -50,6 +50,21 @@ class TruckingScheduleService {
             throw new Error('DDB');
         }
     }
+
+    async assignTruck(assignTrucking: AssignTrucking) {
+        try {
+            const truckings = await truckingScheduleRepository.assignTruck(assignTrucking);
+            return truckings;
+        } catch (error) {
+            console.error('Error', error);
+            throw error;
+        }
+    }
+}
+
+interface AssignTrucking {
+    truckingId: string;
+    value: string;
 }
 
 export default TruckingScheduleService;

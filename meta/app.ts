@@ -168,6 +168,18 @@ api.put('/trucking-verify', async (req, res) => {
     }
 });
 
+api.put('/trucking-assign', async (req, res) => {
+    const assignTrucking: AssignTrucking = JSON.parse(JSON.stringify(req.body));
+
+    try {
+        await truckingScheduleService.assignTruck(assignTrucking);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        console.log('API Error', error);
+        return res.cors({}).status(500);
+    }
+});
+
 api.post('/settlement', async (req, res) => {
     const settlements = await settlementService.settlement();
     res.cors({}).send({ settlements: settlements });
@@ -196,6 +208,11 @@ interface TruckingRequest {
     arrivalId: string;
     carType: string;
     truckingCount: number;
+}
+
+interface AssignTrucking {
+    truckingId: string;
+    value: string;
 }
 
 exports.lambdaHandler = async (event: APIGatewayProxyEvent, context: Context) => {

@@ -58,20 +58,14 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             },
         };
 
-        console.log('PARAM :', getParam);
-
         const truckingSchedule = await dynamoDbClient.get(getParam).promise();
         const truckingScheduleResult = truckingSchedule.Item as TruckingSchedule;
-
-        console.log('RESULT :', getParam);
 
         try {
             const param = {
                 TableName: 'Meta',
-                Item: { ...truckingScheduleResult, status: 'Verify' },
+                Item: { ...truckingScheduleResult, status: '배차 확인' },
             };
-
-            console.log('param:', param);
 
             await dynamoDbClient.put(param).promise();
         } catch (error) {
@@ -119,6 +113,38 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async assignTruck(assignTrucking: AssignTrucking): Promise<void> {
+        const today = moment();
+
+        const getParam = {
+            TableName: 'Meta',
+            Key: {
+                PK: 'MAILLINE#TRUCKINGREQUEST',
+                SK: 'TRUCKINGREQUEST#' + today.format('YYYYMMDD') + '#' + assignTrucking.truckingId,
+            },
+        };
+
+        const truckingSchedule = await dynamoDbClient.get(getParam).promise();
+        const truckingScheduleResult = truckingSchedule.Item as TruckingSchedule;
+
+        try {
+            const param = {
+                TableName: 'Meta',
+                Item: { ...truckingScheduleResult, status: 'ASSIGNED', carNumber: assignTrucking.value },
+            };
+
+            await dynamoDbClient.put(param).promise();
+        } catch (error) {
+            console.log('DDB Error', error);
+            throw new Error(JSON.stringify(error));
+        }
+    }
+}
+
+interface AssignTrucking {
+    truckingId: string;
+    value: string;
 }
 
 export default TruckingScheduleDDBRepository;
