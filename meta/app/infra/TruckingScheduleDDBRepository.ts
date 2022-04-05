@@ -140,6 +140,60 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async assignTruckDepartureDateTime(assignTrucking: AssignTrucking): Promise<void> {
+        const today = moment();
+
+        const getParam = {
+            TableName: 'Meta',
+            Key: {
+                PK: 'MAILLINE#TRUCKINGREQUEST',
+                SK: 'TRUCKINGREQUEST#' + today.format('YYYYMMDD') + '#' + assignTrucking.truckingId,
+            },
+        };
+
+        const truckingSchedule = await dynamoDbClient.get(getParam).promise();
+        const truckingScheduleResult = truckingSchedule.Item as TruckingSchedule;
+
+        try {
+            const param = {
+                TableName: 'Meta',
+                Item: { ...truckingScheduleResult, departureDateTime: assignTrucking.value },
+            };
+
+            await dynamoDbClient.put(param).promise();
+        } catch (error) {
+            console.log('DDB Error', error);
+            throw new Error(JSON.stringify(error));
+        }
+    }
+
+    async assignTruckArrivalDateTime(assignTrucking: AssignTrucking): Promise<void> {
+        const today = moment();
+
+        const getParam = {
+            TableName: 'Meta',
+            Key: {
+                PK: 'MAILLINE#TRUCKINGREQUEST',
+                SK: 'TRUCKINGREQUEST#' + today.format('YYYYMMDD') + '#' + assignTrucking.truckingId,
+            },
+        };
+
+        const truckingSchedule = await dynamoDbClient.get(getParam).promise();
+        const truckingScheduleResult = truckingSchedule.Item as TruckingSchedule;
+
+        try {
+            const param = {
+                TableName: 'Meta',
+                Item: { ...truckingScheduleResult, arrivalDateTime: assignTrucking.value },
+            };
+
+            await dynamoDbClient.put(param).promise();
+        } catch (error) {
+            console.log('DDB Error', error);
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 interface AssignTrucking {

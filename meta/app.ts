@@ -180,6 +180,30 @@ api.put('/trucking-assign', async (req, res) => {
     }
 });
 
+api.put('/trucking-departure', async (req, res) => {
+    const assignTrucking: AssignTrucking = JSON.parse(JSON.stringify(req.body));
+
+    try {
+        await truckingScheduleService.assignTruckDepartureDateTime(assignTrucking);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        console.log('API Error', error);
+        return res.cors({}).status(500);
+    }
+});
+
+api.put('/trucking-arrival', async (req, res) => {
+    const assignTrucking: AssignTrucking = JSON.parse(JSON.stringify(req.body));
+
+    try {
+        await truckingScheduleService.assignTruckArrivalDateTime(assignTrucking);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        console.log('API Error', error);
+        return res.cors({}).status(500);
+    }
+});
+
 api.post('/settlement', async (req, res) => {
     const settlements = await settlementService.settlement();
     res.cors({}).send({ settlements: settlements });

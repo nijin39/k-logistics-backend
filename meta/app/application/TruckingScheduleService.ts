@@ -60,6 +60,26 @@ class TruckingScheduleService {
             throw error;
         }
     }
+
+    async assignTruckDepartureDateTime(assignTrucking: AssignTrucking) {
+        try {
+            const departureDateTime = await truckingScheduleRepository.assignTruckDepartureDateTime(assignTrucking);
+            return departureDateTime;
+        } catch (error) {
+            console.error('Error', error);
+            throw error;
+        }
+    }
+
+    async assignTruckArrivalDateTime(assignTrucking: AssignTrucking) {
+        try {
+            const departureDateTime = await truckingScheduleRepository.assignTruckArrivalDateTime(assignTrucking);
+            return departureDateTime;
+        } catch (error) {
+            console.error('Error', error);
+            throw error;
+        }
+    }
 }
 
 interface AssignTrucking {
