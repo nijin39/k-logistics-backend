@@ -11,6 +11,7 @@ import { TerminalDistance } from './app/domain/TerminalDistance';
 import CapacityService from './app/application/CapacityService';
 import { Capacity } from './app/domain/Capacity';
 import TruckingService from './app/application/TruckingService';
+import TruckingScheduleService from './app/application/TruckingScheduleService';
 
 const api = API({});
 const terminalService = TerminalService.getInstance();
@@ -21,6 +22,7 @@ const operationService = OperationService.getInstance();
 const settlementService = SettlementService.getInstance();
 const capacityService = CapacityService.getInstance();
 const truckingService = TruckingService.getInstance();
+const truckingScheduleService = TruckingScheduleService.getInstance();
 
 api.get('/terminal', async (req, res) => {
     const terminals = await terminalService.findAll();
@@ -123,6 +125,45 @@ api.delete('/trucking', async (req, res) => {
         await truckingService.delete(deleteParams);
         return res.cors({}).send({ result: 'Success all trucking' });
     } catch (error) {
+        return res.cors({}).status(500);
+    }
+});
+
+api.post('/trucking-all-request', async (req, res) => {
+    try {
+        await truckingService.truckingRequestAll();
+    } catch (error) {
+        console.log('Error :', error);
+    }
+    //const updatedTerminalDistances = await terminalDistanceService.findAll();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ status: 'Success' });
+});
+
+api.get('/trucking-all-request', async (req, res) => {
+    const truckingSchedule = await truckingScheduleService.findAll();
+    //const updatedTerminalDistances = await terminalDistanceService.findAll();
+    res.cors({ headers: 'content-type, x-api-key', origin: '*' }).send({ truckingSchedules: truckingSchedule });
+});
+
+api.delete('/trucking-schedule', async (req, res) => {
+    const deleteParams: string[] = JSON.parse(JSON.stringify(req.body));
+
+    try {
+        await truckingScheduleService.delete(deleteParams);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        return res.cors({}).status(500);
+    }
+});
+
+api.put('/trucking-verify', async (req, res) => {
+    const verifyParams: string[] = JSON.parse(JSON.stringify(req.body.data));
+
+    try {
+        await truckingScheduleService.verify(verifyParams);
+        return res.cors({}).send({ result: 'Success all trucking' });
+    } catch (error) {
+        console.log('API Error', error);
         return res.cors({}).status(500);
     }
 });

@@ -3,6 +3,7 @@ import https from 'https';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 import { TruckingRepository } from '../domain/TruckingRepository';
 import { Trucking } from '../domain/Trucking';
+import moment from 'moment';
 
 const agent = new https.Agent({
     keepAlive: true,
@@ -103,6 +104,33 @@ class TruckingDDBRepository implements TruckingRepository {
 
         try {
             await dynamoDbClient.delete(params).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
+
+    async addTruckingWithInit(trucking: Trucking) {
+        const today = moment();
+
+        const param = {
+            TableName: 'Meta',
+            Item: {
+                PK: 'MAILLINE#TRUCKINGREQUEST',
+                SK: 'TRUCKINGREQUEST#' + today.format('YYYYMMDD') + '#' + trucking.truckingId,
+                departureName: trucking.departureName,
+                departureId: trucking.departureId,
+                arrivalName: trucking.arrivalName,
+                arrivalId: trucking.arrivalId,
+                truckingId: trucking.truckingId,
+                truckingIndex: trucking.truckingIndex,
+                carType: trucking.carType,
+                status: 'REQUEST',
+            },
+        };
+
+        try {
+            await dynamoDbClient.put(param).promise();
         } catch (error) {
             console.log(JSON.stringify(error));
             throw new Error(JSON.stringify(error));

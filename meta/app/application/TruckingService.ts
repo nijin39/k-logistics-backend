@@ -61,6 +61,20 @@ class TruckingService {
             throw new Error('DDB');
         }
     }
+
+    async truckingRequestAll() {
+        const truckings: Trucking[] = await truckingRepository.findAll();
+        try {
+            await Promise.all(
+                truckings.map(async (trucking) => {
+                    await truckingRepository.addTruckingWithInit(trucking);
+                }),
+            );
+        } catch (error) {
+            console.error('Error');
+            throw new Error('DDB');
+        }
+    }
 }
 
 export default TruckingService;

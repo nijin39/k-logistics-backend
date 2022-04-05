@@ -11,7 +11,7 @@ Globals:
     Timeout: 10
   Api:
     Cors:
-      AllowMethods: "'GET,POST,DELETE,OPTIONS'"
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
       AllowHeaders: "'content-type,x-api-key,authorization'"
       AllowOrigin: "'*'"
       # AllowCredentials: true
