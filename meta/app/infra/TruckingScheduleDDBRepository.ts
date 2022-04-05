@@ -141,7 +141,7 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
         }
     }
 
-    async assignTruckDepartureDateTime(assignTrucking: AssignTrucking): Promise<void> {
+    async assignTruckDepartureDateTime(assignTrucking: AssignTrucking): Promise<TruckingSchedule> {
         const today = moment();
 
         const getParam = {
@@ -162,13 +162,14 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             };
 
             await dynamoDbClient.put(param).promise();
+            return param.Item as TruckingSchedule;
         } catch (error) {
             console.log('DDB Error', error);
             throw new Error(JSON.stringify(error));
         }
     }
 
-    async assignTruckArrivalDateTime(assignTrucking: AssignTrucking): Promise<void> {
+    async assignTruckArrivalDateTime(assignTrucking: AssignTrucking): Promise<TruckingSchedule> {
         const today = moment();
 
         const getParam = {
@@ -189,6 +190,7 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             };
 
             await dynamoDbClient.put(param).promise();
+            return param.Item as TruckingSchedule;
         } catch (error) {
             console.log('DDB Error', error);
             throw new Error(JSON.stringify(error));

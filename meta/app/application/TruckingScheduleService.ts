@@ -1,8 +1,11 @@
+import { OperationRepository } from '../domain/OperationRepository';
 import { TruckingSchedule } from '../domain/TruckingSchedule';
 import { TruckingScheduleRepository } from '../domain/TruckingScheduleRepository';
+import OperationDDBRepository from '../infra/OperationDDBRepository';
 import TruckingScheduleDDBRepository from '../infra/TruckingScheduleDDBRepository';
 
 const truckingScheduleRepository: TruckingScheduleRepository = TruckingScheduleDDBRepository.getInstance;
+const operationRepository: OperationRepository = OperationDDBRepository.getInstance;
 
 class TruckingScheduleService {
     private static instance: TruckingScheduleService;
@@ -63,8 +66,21 @@ class TruckingScheduleService {
 
     async assignTruckDepartureDateTime(assignTrucking: AssignTrucking) {
         try {
-            const departureDateTime = await truckingScheduleRepository.assignTruckDepartureDateTime(assignTrucking);
-            return departureDateTime;
+            const truckingSchedule = await truckingScheduleRepository.assignTruckDepartureDateTime(assignTrucking);
+            if (truckingSchedule.arrivalDateTime !== undefined && truckingSchedule.departureDateTime !== undefined) {
+                console.log('Add Operation');
+                await operationRepository.save({
+                    id: truckingSchedule.truckingId,
+                    terminalArrival: truckingSchedule.arrivalName,
+                    terminalArrivalAreaCode: truckingSchedule.arrivalId,
+                    arrivalTime: truckingSchedule.arrivalDateTime,
+                    terminalDeparture: truckingSchedule.departureName,
+                    terminalDepartureAreaCode: truckingSchedule.departureId,
+                    departureTime: truckingSchedule.departureDateTime,
+                    carType: Number(truckingSchedule.carType),
+                });
+            }
+            return truckingSchedule;
         } catch (error) {
             console.error('Error', error);
             throw error;
@@ -73,8 +89,21 @@ class TruckingScheduleService {
 
     async assignTruckArrivalDateTime(assignTrucking: AssignTrucking) {
         try {
-            const departureDateTime = await truckingScheduleRepository.assignTruckArrivalDateTime(assignTrucking);
-            return departureDateTime;
+            const truckingSchedule = await truckingScheduleRepository.assignTruckArrivalDateTime(assignTrucking);
+            if (truckingSchedule.arrivalDateTime !== undefined && truckingSchedule.departureDateTime !== undefined) {
+                console.log('Add Operation');
+                await operationRepository.save({
+                    id: truckingSchedule.truckingId,
+                    terminalArrival: truckingSchedule.arrivalName,
+                    terminalArrivalAreaCode: truckingSchedule.arrivalId,
+                    arrivalTime: truckingSchedule.arrivalDateTime,
+                    terminalDeparture: truckingSchedule.departureName,
+                    terminalDepartureAreaCode: truckingSchedule.departureId,
+                    departureTime: truckingSchedule.departureDateTime,
+                    carType: Number(truckingSchedule.carType),
+                });
+            }
+            return truckingSchedule;
         } catch (error) {
             console.error('Error', error);
             throw error;

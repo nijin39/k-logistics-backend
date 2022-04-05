@@ -3,6 +3,7 @@ import https from 'https';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 import { Operation } from '../domain/Operation';
 import { OperationRepository } from '../domain/OperationRepository';
+import moment from 'moment';
 
 const agent = new https.Agent({
     keepAlive: true,
@@ -58,11 +59,14 @@ class OperationDDBRepository implements OperationRepository {
     }
 
     async findAll(): Promise<Operation[]> {
+        const today = moment();
+
         const param = {
             TableName: MetaTable,
-            KeyConditionExpression: 'PK = :pk',
+            KeyConditionExpression: 'PK = :pk and begins_with(SK, :sk)',
             ExpressionAttributeValues: {
                 ':pk': 'OPERATION',
+                ':sk': today.format('YYYYMMDD') + '#',
             },
         };
 
@@ -79,11 +83,14 @@ class OperationDDBRepository implements OperationRepository {
     }
 
     async save(operationSaveRequest: OperationSaveRequest) {
+        const today = moment();
+
         const param = {
             TableName: MetaTable,
             Item: {
                 PK: 'OPERATION',
-                SK: '20220330#' + operationSaveRequest.id,
+                SK: today.format('YYYYMMDD') + '#' + operationSaveRequest.id,
+                id: operationSaveRequest.id,
                 terminalArrival: operationSaveRequest.terminalArrival,
                 terminalArrivalAreaCode: operationSaveRequest.terminalArrivalAreaCode,
                 arrivalTime: operationSaveRequest.arrivalTime,

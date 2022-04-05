@@ -9,6 +9,8 @@ export class TruckingSchedule {
     carType: string;
     truckingIndex: number;
     status: string;
+    departureDateTime: string;
+    arrivalDateTime: string;
 
     constructor(
         PK: string,
@@ -21,6 +23,8 @@ export class TruckingSchedule {
         carType: string,
         truckingIndex: number,
         status: string,
+        departureDateTime: string,
+        arrivalDateTime: string,
     ) {
         this.PK = PK;
         this.SK = SK;
@@ -32,5 +36,7 @@ export class TruckingSchedule {
         this.carType = carType;
         this.truckingIndex = truckingIndex;
         this.status = status;
+        this.departureDateTime = departureDateTime;
+        this.arrivalDateTime = arrivalDateTime;
     }
 }
