@@ -32,6 +32,7 @@ class TruckingScheduleService {
             await Promise.all(
                 truckingIds.map(async (id) => {
                     await truckingScheduleRepository.delete(id);
+                    await operationRepository.delete(id);
                 }),
             );
         } catch (error) {

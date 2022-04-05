@@ -108,6 +108,25 @@ class OperationDDBRepository implements OperationRepository {
             throw new Error(JSON.stringify(error));
         }
     }
+
+    async delete(id: string): Promise<void> {
+        const today = moment();
+
+        const params = {
+            TableName: MetaTable,
+            Key: {
+                PK: 'OPERATION',
+                SK: today.format('YYYYMMDD') + '#' + id,
+            },
+        };
+
+        try {
+            await dynamoDbClient.delete(params).promise();
+        } catch (error) {
+            console.log(JSON.stringify(error));
+            throw new Error(JSON.stringify(error));
+        }
+    }
 }
 
 export default OperationDDBRepository;

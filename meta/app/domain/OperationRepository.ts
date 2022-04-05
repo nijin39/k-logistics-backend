@@ -12,6 +12,7 @@ interface OperationRequest {
 }
 
 export interface OperationRepository {
+    delete(id: string): Promise<void>;
     findAll(): Promise<Operation[]>;
     save(operation: OperationRequest): void;
 }
