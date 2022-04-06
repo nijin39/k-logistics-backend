@@ -58,23 +58,33 @@ class SettlementService {
                         item.terminalArrival,
                     );
 
-                    const capaticy: Capacity = await tarriffRepository.findByDistanceAndCapaticy(
-                        terminalDistance.distance,
-                        item.carType,
-                    );
+                    if (terminalDistance !== undefined) {
+                        const capaticy: Capacity = await tarriffRepository.findByDistanceAndCapaticy(
+                            terminalDistance.distance,
+                            item.carType,
+                        );
 
-                    const rate = companyRate.rate;
-                    const distance = terminalDistance === undefined ? 0 : terminalDistance.distance;
-                    const price = capaticy === undefined ? 0 : capaticy.price;
-                    const sattlementPrice = (price * rate) / 100;
+                        const rate = companyRate.rate;
+                        const distance = terminalDistance === undefined ? 0 : terminalDistance.distance;
+                        const price = capaticy === undefined ? 0 : capaticy.price;
+                        const sattlementPrice = (price * rate) / 100;
 
-                    return {
-                        ...item,
-                        rate: companyRate.rate,
-                        distance: distance,
-                        price: price,
-                        sattlementPrice: Math.round(sattlementPrice),
-                    };
+                        return {
+                            ...item,
+                            rate: companyRate.rate,
+                            distance: distance,
+                            price: price,
+                            sattlementPrice: Math.round(sattlementPrice),
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            rate: companyRate.rate,
+                            distance: -1,
+                            price: -1,
+                            sattlementPrice: -1,
+                        };
+                    }
                 }),
             );
 
