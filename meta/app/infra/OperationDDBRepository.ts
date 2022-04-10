@@ -41,6 +41,7 @@ interface OperationSaveRequest {
     terminalDepartureAreaCode: string;
     departureTime: string;
     carType: number;
+    carNumber: string;
 }
 
 class OperationDDBRepository implements OperationRepository {
@@ -98,6 +99,7 @@ class OperationDDBRepository implements OperationRepository {
                 terminalDepartureAreaCode: operationSaveRequest.terminalDepartureAreaCode,
                 departureTime: operationSaveRequest.departureTime,
                 carType: operationSaveRequest.carType,
+                carNumber: operationSaveRequest.carNumber,
             },
         };
 

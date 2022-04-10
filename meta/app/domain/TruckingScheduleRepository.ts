@@ -8,7 +8,7 @@ interface AssignTrucking {
 export interface TruckingScheduleRepository {
     assignTruckArrivalDateTime(assignTrucking: AssignTrucking): Promise<TruckingSchedule>;
     assignTruckDepartureDateTime(assignTrucking: AssignTrucking): Promise<TruckingSchedule>;
-    assignTruck(assignTrucking: AssignTrucking): Promise<void>;
+    assignTruck(assignTrucking: AssignTrucking): Promise<TruckingSchedule>;
     findAll(): Promise<TruckingSchedule[]>;
     delete(truckingId: string): Promise<void>;
     verify(truckingId: string): Promise<void>;

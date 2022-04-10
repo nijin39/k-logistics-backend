@@ -57,8 +57,20 @@ class TruckingScheduleService {
 
     async assignTruck(assignTrucking: AssignTrucking) {
         try {
-            const truckings = await truckingScheduleRepository.assignTruck(assignTrucking);
-            return truckings;
+            const truckingSchedule = await truckingScheduleRepository.assignTruck(assignTrucking);
+            console.log('Trucking :', truckingSchedule);
+            await operationRepository.save({
+                id: truckingSchedule.truckingId,
+                terminalArrival: truckingSchedule.arrivalName,
+                terminalArrivalAreaCode: truckingSchedule.arrivalId,
+                arrivalTime: truckingSchedule.arrivalDateTime,
+                terminalDeparture: truckingSchedule.departureName,
+                terminalDepartureAreaCode: truckingSchedule.departureId,
+                departureTime: truckingSchedule.departureDateTime,
+                carType: Number(truckingSchedule.carType),
+                carNumber: truckingSchedule.carNumber,
+            });
+            return truckingSchedule;
         } catch (error) {
             console.error('Error', error);
             throw error;
@@ -79,6 +91,7 @@ class TruckingScheduleService {
                     terminalDepartureAreaCode: truckingSchedule.departureId,
                     departureTime: truckingSchedule.departureDateTime,
                     carType: Number(truckingSchedule.carType),
+                    carNumber: truckingSchedule.carNumber,
                 });
             }
             return truckingSchedule;
@@ -102,6 +115,7 @@ class TruckingScheduleService {
                     terminalDepartureAreaCode: truckingSchedule.departureId,
                     departureTime: truckingSchedule.departureDateTime,
                     carType: Number(truckingSchedule.carType),
+                    carNumber: truckingSchedule.carNumber,
                 });
             }
             return truckingSchedule;

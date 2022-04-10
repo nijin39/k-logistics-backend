@@ -7,6 +7,7 @@ export class TruckingSchedule {
     arrivalName: string;
     arrivalId: string;
     carType: string;
+    carNumber: string;
     truckingIndex: number;
     status: string;
     departureDateTime: string;
@@ -21,6 +22,7 @@ export class TruckingSchedule {
         arrivalName: string,
         arrivalId: string,
         carType: string,
+        carNumber: string,
         truckingIndex: number,
         status: string,
         departureDateTime: string,
@@ -34,6 +36,7 @@ export class TruckingSchedule {
         this.arrivalName = arrivalName;
         this.arrivalId = arrivalId;
         this.carType = carType;
+        this.carNumber = carNumber;
         this.truckingIndex = truckingIndex;
         this.status = status;
         this.departureDateTime = departureDateTime;

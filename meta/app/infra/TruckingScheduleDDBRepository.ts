@@ -114,7 +114,7 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
         }
     }
 
-    async assignTruck(assignTrucking: AssignTrucking): Promise<void> {
+    async assignTruck(assignTrucking: AssignTrucking): Promise<TruckingSchedule> {
         const today = moment();
 
         const getParam = {
@@ -135,6 +135,10 @@ class TruckingScheduleDDBRepository implements TruckingScheduleRepository {
             };
 
             await dynamoDbClient.put(param).promise();
+
+            console.log('CONSOLE :', param.Item);
+
+            return param.Item as TruckingSchedule;
         } catch (error) {
             console.log('DDB Error', error);
             throw new Error(JSON.stringify(error));

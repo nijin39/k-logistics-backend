@@ -9,6 +9,7 @@ interface OperationRequest {
     terminalDepartureAreaCode: string;
     departureTime: string;
     carType: number;
+    carNumber: string;
 }
 
 export interface OperationRepository {

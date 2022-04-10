@@ -9,6 +9,7 @@ export class Operation {
     terminalDepartureAreaCode: string;
     departureTime: string;
     carType: number;
+    carNumber: string;
 
     constructor(
         PK: string,
@@ -21,6 +22,7 @@ export class Operation {
         terminalDepartureAreaCode: string,
         departureTime: string,
         carType: number,
+        carNumber: string,
     ) {
         this.PK = PK;
         this.SK = SK;
@@ -32,5 +34,6 @@ export class Operation {
         this.terminalDepartureAreaCode = terminalDepartureAreaCode;
         this.departureTime = departureTime;
         this.carType = carType;
+        this.carNumber = carNumber;
     }
 }
